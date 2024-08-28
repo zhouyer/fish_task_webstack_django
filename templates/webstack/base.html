@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}{% endblock %}-WebStack网址导航</title>
+    <meta name="keywords"
+          content="django网站导航、django网站、网站导航、django实战、django网站导航后台管理">
+    <meta name="description"
+          content="FishTask -www.fishtask.cn">
+    <link rel="shortcut icon" href="{% static 'webstack/assets/images/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'webstack/assets/css/fonts/fontawesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'webstack/assets/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'webstack/assets/css/xenon-core.css' %}">
+    <link rel="stylesheet" href="{% static 'webstack/assets/css/xenon-components.css' %}">
+    <link rel="stylesheet" href="{% static 'webstack/assets/css/xenon-skins.css' %}">
+    <link rel="stylesheet" href="{% static 'webstack/assets/css/nav.css' %}">
+    <script src="{% static 'webstack/assets/js/jquery-1.11.1.min.js' %}"></script>
+    {% block head %} {% endblock %}
+</head>
+<body class="page-body">
+<!-- skin-white -->
+<div class="page-container">
+    <div class="sidebar-menu toggle-others fixed">
+        <div class="sidebar-menu-inner">
+            <header class="logo-env">
+                <!-- logo -->
+                {% block logo %}{% endblock %}
+                <div class="mobile-menu-toggle visible-xs">
+                    <a href="#" data-toggle="user-info-menu">
+                        <i class="linecons-cog"></i>
+                    </a>
+                    <a href="#" data-toggle="mobile-menu">
+                        <i class="fa-bars"></i>
+                    </a>
+                </div>
+            </header>
+            <ul id="main-menu" class="main-menu">
+                {% for menu_item in first_level_menu %}
+                    {% if menu_item.has_webstack %}
+                        <li>
+                            {% if not menu_item.get_second_level_menus %}
+                                {# 只有一级菜单项#}
+                                <a href="#{{ menu_item.name }}" class="smooth">
+                                    <i class="{{ menu_item.icon }}"></i>
+                                    <span class="title">{{ menu_item.name }}</span>
+                                </a>
+                            {% else %}
+                                {# 存在二级菜单项#}
+                                <a>
+                                    <i class="{{ menu_item.icon }}"></i>
+                                    <span class="title">{{ menu_item.name }}</span>
+                                </a>
+                                <ul>
+                                    {% for second_level_menu_item in  menu_item.get_second_level_menus %}
+                                        {% if second_level_menu_item.get_webstack_list %}
+                                            <li>
+                                                <a href="#{{ second_level_menu_item.name }}" class="smooth">
+                                                    <span class="title">{{ second_level_menu_item.name }}</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="main-content">
+        <nav class="navbar user-info-navbar" role="navigation">
+            <ul class="user-info-menu left-links list-inline list-unstyled">
+                <li class="hidden-sm hidden-xs">
+                    <a href="#" data-toggle="sidebar">
+                        <i class="fa-bars"></i>
+                    </a>
+                </li>
+                {#                <li class="hidden-sm hidden-xs">#}
+                {#                    <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">#}
+                {#                        <i class="fa-github"></i> GitHub#}
+                {#                    </a>#}
+                {#                </li>#}
+            </ul>
+        </nav>
+        <!-- 网站 -->
+        {% for first_menu in first_level_menu %}
+            {% for second_menu in first_menu.second_level_menus.all %}
+                {% if second_menu.get_webstack_list %}
+                    <h4 class="text-gray">
+                        <i class="{{ second_menu.icon }}" style="margin-right: 7px;" id="{{ second_menu.name }}"></i>
+                        {{ second_menu.name }}
+                    </h4>
+                    <div class="row">
+                        {% for webstack in  second_menu.get_webstack_list %}
+                        	<div class="col-sm-3">
+                            <div class="xe-widget xe-conversations box2 label-info"
+                                 onclick="window.open('{{ webstack.url }}', '_blank')" data-toggle="tooltip"
+                                 data-placement="bottom" title="" data-original-title="{{ webstack.description }}">
+                                <div class="xe-comment-entry">
+                                    <a class="xe-user-img">
+                                        <img data-src="{{ webstack.image.url }}"
+                                             class="lozad img-circle" width="40"/>
+                                    </a>
+                                    <div class="xe-comment">
+                                        <a href="#" class="xe-user-name overflowClip_1">
+                                            <strong>{{ webstack.name }}</strong>
+                                        </a>
+                                        <p class="overflowClip_2">{{ webstack.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+
+        <!-- Main Footer -->
+        <!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->
+        <!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->
+        <!-- Or class "fixed" to  always fix the footer to the end of page -->
+        <footer class="main-footer sticky footer-type-1">
+            <div class="footer-inner">
+                <!-- Add your copyright text here -->
+                <div class="footer-text">
+                    &copy; 2024
+                    <a href="../cn/about.html">
+                        <strong>fish_task_webstack_django</strong>
+                    </a> design by
+                    <a href="https://www.viggoz.com" target="_blank">
+                        <strong>zhouyer</strong>
+                    </a>
+                    <!--  - Purchase for only <strong>23$</strong> -->
+                </div>
+                <!-- Go to Top Link, just add rel="go-top" to any link to add this functionality -->
+                <div class="go-up">
+                    <a href="#" rel="go-top">
+                        <i class="fa-angle-up"></i>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<!-- 锚点平滑移动 -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        //img lazy loaded
+        const observer = lozad();
+        observer.observe();
+
+        $(document).on('click', '.has-sub', function () {
+            var _this = $(this)
+            if (!$(this).hasClass('expanded')) {
+                setTimeout(function () {
+                    _this.find('ul').attr("style", "")
+                }, 300);
+
+            } else {
+                $('.has-sub ul').each(function (id, ele) {
+                    var _that = $(this)
+                    if (_this.find('ul')[0] != ele) {
+                        setTimeout(function () {
+                            _that.attr("style", "")
+                        }, 300);
+                    }
+                })
+            }
+        })
+        $('.user-info-menu .hidden-sm').click(function () {
+            if ($('.sidebar-menu').hasClass('collapsed')) {
+                $('.has-sub.expanded > ul').attr("style", "")
+            } else {
+                $('.has-sub.expanded > ul').show()
+            }
+        })
+        $("#main-menu li ul li").click(function () {
+            $(this).siblings('li').removeClass('active'); // 删除其他兄弟元素的样式
+            $(this).addClass('active'); // 添加当前元素的样式
+        });
+        $("a.smooth").click(function (ev) {
+            ev.preventDefault();
+
+            public_vars.$mainMenu.add(public_vars.$sidebarProfile).toggleClass('mobile-is-visible');
+            ps_destroy();
+            $("html, body").animate({
+                scrollTop: $($(this).attr("href")).offset().top - 30
+            }, {
+                duration: 500,
+                easing: "swing"
+            });
+        });
+        return false;
+    });
+
+    var href = "";
+    var pos = 0;
+    $("a.smooth").click(function (e) {
+        $("#main-menu li").each(function () {
+            $(this).removeClass("active");
+        });
+        $(this).parent("li").addClass("active");
+        e.preventDefault();
+        href = $(this).attr("href");
+        pos = $(href).position().top - 30;
+    });
+</script>
+<!-- Bottom Scripts -->
+<script src="{% static 'webstack/assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'webstack/assets/js/TweenMax.min.js' %}"></script>
+<script src="{% static 'webstack/assets/js/resizeable.js' %}"></script>
+<script src="{% static 'webstack/assets/js/joinable.js' %}"></script>
+<script src="{% static 'webstack/assets/js/xenon-api.js' %}"></script>
+<script src="{% static 'webstack/assets/js/xenon-toggles.js' %}"></script>
+<!-- JavaScripts initializations and stuff -->
+<script src="{% static 'webstack/assets/js/xenon-custom.js' %}"></script>
+<script src="{% static 'webstack/assets/js/lozad.js' %}"></script>
+</html>
